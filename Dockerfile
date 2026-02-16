@@ -1,33 +1,28 @@
-FROM nginx:alpine
+FROM nginx:1.27-alpine
 
-# Installation des outils nécessaires
+# Outil utilisé par le HEALTHCHECK
 RUN apk add --no-cache curl
 
-# Suppression de la configuration par défaut de Nginx
+# Nettoyage des assets par défaut
 RUN rm -rf /usr/share/nginx/html/*
 
-# Création des répertoires nécessaires
-RUN mkdir -p /usr/share/nginx/html/img
-
-# Copie des fichiers de l'application
+# Copie des fichiers statiques
 COPY *.html /usr/share/nginx/html/
 COPY *.js /usr/share/nginx/html/
 COPY *.css /usr/share/nginx/html/
-COPY img/* /usr/share/nginx/html/img/
+COPY img /usr/share/nginx/html/img
 
-# Configuration de Nginx
+# Configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Configuration des permissions
+# Permissions
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html
 
-# Exposition du port 80
 EXPOSE 80
 
-# Vérification de la santé
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost/ || exit 1
+# Vérification de santé
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost/healthz || exit 1
 
-# Démarrage de Nginx
-CMD ["nginx", "-g", "daemon off;"] 
+CMD ["nginx", "-g", "daemon off;"]
