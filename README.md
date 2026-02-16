@@ -1,98 +1,91 @@
-# Application d'Exercices de Mathématiques
+# Application d'exercices de mathématiques
 
-Application web interactive pour apprendre les mathématiques, incluant :
+Application web statique (HTML/CSS/JS) pour s'entraîner en mathématiques :
 - Tables de multiplication
 - Tables d'addition
-- Addition aléatoire
+- Additions aléatoires
 - Tables de soustraction
+
+L'application est servie par **Nginx** et déployable facilement avec **Docker / Docker Compose**.
 
 ## Prérequis
 
-- Serveur VPS avec Docker
-- Portainer
-- Nginx Proxy Manager (optionnel)
+- Docker 24+
+- Docker Compose (plugin `docker compose`)
 
-## Installation via Portainer
+## Installation rapide (Docker Compose)
 
-1. **Préparation des fichiers** :
-   - Téléchargez tous les fichiers du projet sur votre ordinateur
-   - Créez un dossier `img` et placez-y l'image de fond `wallpaper.png`
-   - Compressez tous les fichiers en un fichier ZIP
+1. Clonez le dépôt et placez-vous à la racine :
+   ```bash
+   git clone <url-du-repo>
+   cd mathematiques
+   ```
+2. Lancez l'application :
+   ```bash
+   docker compose up -d --build
+   ```
+3. Ouvrez votre navigateur :
+   - http://localhost:1987
 
-2. **Déploiement sur Portainer** :
-   1. Connectez-vous à votre interface Portainer
-   2. Allez dans "Stacks"
-   3. Cliquez sur "Add stack"
-   4. Donnez un nom à votre stack (par exemple "maths-app")
-   5. Dans l'onglet "Build method", sélectionnez "Upload"
-   6. Uploadez votre fichier ZIP
-   7. Cliquez sur "Deploy the stack"
+## Commandes utiles
 
-3. **Vérification** :
-   - Accédez à http://[IP_DU_SERVEUR]:1987
-   - Vérifiez que l'image de fond s'affiche correctement
-   - Testez les différentes fonctionnalités
+- Démarrer / reconstruire :
+  ```bash
+  docker compose up -d --build
+  ```
+- Voir les logs :
+  ```bash
+  docker compose logs -f
+  ```
+- Arrêter :
+  ```bash
+  docker compose down
+  ```
+- Vérifier la configuration Compose :
+  ```bash
+  docker compose config
+  ```
 
-## Configuration Nginx Proxy Manager (optionnel)
+## Déploiement via Portainer (optionnel)
 
-1. Connectez-vous à votre interface Nginx Proxy Manager
-2. Allez dans "Proxy Hosts"
-3. Cliquez sur "Add Proxy Host"
-4. Configurez comme suit :
-   - Domain Names : votre-domaine.com
-   - Scheme : http
-   - Forward Hostname / IP : [IP_DU_SERVEUR]
-   - Forward Port : 1987
-   - SSL : Activez si vous avez un certificat SSL
+1. Dans **Stacks** > **Add stack**, importez le dépôt (Git) ou le contenu du projet.
+2. Vérifiez que `docker-compose.yml` est utilisé.
+3. Déployez la stack.
+4. Exposez le port `1987` (ou modifiez la publication de port selon votre besoin).
 
-## Maintenance
+## Configuration avec reverse proxy (optionnel)
 
-### Mise à jour
-Pour mettre à jour l'application via Portainer :
-1. Préparez une nouvelle version du ZIP
-2. Dans Portainer, allez dans votre stack
-3. Cliquez sur "Editor"
-4. Uploadez le nouveau ZIP
-5. Cliquez sur "Update the stack"
+Vous pouvez placer Nginx Proxy Manager / Traefik / Caddy devant l'application :
+- Schéma : `http`
+- Host cible : IP/nom du serveur Docker
+- Port cible : `1987`
 
-### Logs
-Pour voir les logs dans Portainer :
-1. Allez dans "Containers"
-2. Cliquez sur le conteneur "maths-app"
-3. Allez dans l'onglet "Logs"
+## Structure du projet
 
-### Arrêt
-Pour arrêter l'application :
-1. Dans Portainer, allez dans "Stacks"
-2. Trouvez votre stack
-3. Cliquez sur "Stop" ou "Remove" selon votre besoin
+- `Dockerfile` : image Nginx contenant les ressources statiques.
+- `docker-compose.yml` : orchestration locale/serveur.
+- `nginx.conf` : configuration serveur HTTP (cache, sécurité, gzip, healthcheck).
+- `*.html`, `*.js`, `styles.css` : application front.
+- `img/wallpaper.png` : fond d'écran.
 
-## Caractéristiques
+## Sécurité et performance
 
-- Interface responsive
-- Design moderne et intuitif
-- Pavé numérique virtuel
-- Suivi des scores
-- Différents niveaux de difficulté
-- Feedback immédiat
-- Support des nombres négatifs (soustraction)
+- En-têtes HTTP de sécurité (CSP, X-Frame-Options, etc.)
+- Compression gzip
+- Cache long pour assets statiques
+- Endpoint de santé `/healthz`
+- Healthcheck Docker basé sur Nginx
 
-## Sécurité
+## Dépannage
 
-- Headers de sécurité configurés
-- Compression gzip activée
-- Cache optimisé pour les ressources statiques
-- Healthcheck Docker configuré
-- Permissions nginx correctement configurées
+1. **Le service ne démarre pas**
+   - Vérifiez les logs : `docker compose logs -f`
+   - Vérifiez la config : `docker compose config`
 
-## Résolution des problèmes courants
+2. **L'application n'est pas accessible**
+   - Vérifiez que le port `1987` est ouvert / non occupé
+   - Testez : `curl http://localhost:1987/healthz`
 
-1. **L'image de fond ne s'affiche pas** :
-   - Vérifiez que le fichier `wallpaper.png` est bien présent dans le dossier `img`
-   - Vérifiez les permissions du fichier (755)
-   - Inspectez les logs du conteneur pour voir les erreurs 404 éventuelles
-
-2. **Problèmes d'accès** :
-   - Vérifiez que le port 1987 est ouvert sur votre VPS
-   - Vérifiez les logs Nginx dans le conteneur
-   - Vérifiez la configuration du pare-feu du VPS 
+3. **Image de fond absente**
+   - Vérifiez la présence de `img/wallpaper.png`
+   - Rechargez le conteneur : `docker compose up -d --build`
