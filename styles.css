@@ -732,3 +732,98 @@ h2 {
     background-color: #f8f9fa;
     border-radius: 8px;
 }
+.exercise-prompt {
+    font-size: 1.2rem;
+    color: #202124;
+    margin-bottom: 0.5rem;
+}
+
+.text-question {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.text-question input {
+    width: 160px;
+    font-size: 1.8rem;
+}
+
+.currency-suffix {
+    font-size: 1.6rem;
+    color: #2d8e47;
+}
+
+.clock {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.clock-face {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    border: 6px solid #2d8e47;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 60%, #eef6ee 100%);
+}
+
+.clock-face::before {
+    content: '12';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+}
+
+.clock-face::after {
+    content: '6';
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.1rem;
+}
+
+.hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 50% 100%;
+    border-radius: 999px;
+}
+
+.hour-hand {
+    width: 8px;
+    height: 62px;
+    margin-top: -62px;
+    background-color: #202124;
+}
+
+.minute-hand {
+    width: 4px;
+    height: 84px;
+    margin-top: -84px;
+    background-color: #2d8e47;
+}
+
+.clock-center {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #202124;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.keypad-time,
+.keypad-money {
+    max-width: 460px;
+    grid-template-columns: repeat(6, 1fr);
+}
