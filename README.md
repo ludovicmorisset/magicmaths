@@ -4,6 +4,7 @@ Application web statique (HTML/CSS/JS) pour s'entraîner en mathématiques :
 - Tables de multiplication
 - Tables d'addition
 - Additions aléatoires
+- Compléments à 10 et à 100
 - Tables de soustraction
 - Compréhension de l'heure (lecture d'horloge)
 - Compréhension de la monnaie (calcul de rendu)
