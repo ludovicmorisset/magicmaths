@@ -443,6 +443,39 @@ h2 {
     accent-color: #2d8e47;
 }
 
+
+.featured-links {
+    width: 100%;
+    margin: 0 0 1rem;
+    padding: 1rem 1.5rem;
+    border: 2px dashed #2d8e47;
+    border-radius: 10px;
+    background-color: rgba(232, 240, 254, 0.85);
+    text-align: center;
+}
+
+.featured-links h2 {
+    margin-bottom: 0.5rem;
+    color: #2d8e47;
+    font-size: 1.4rem;
+}
+
+.featured-links p {
+    color: #202124;
+    font-size: 1rem;
+}
+
+.featured-links a {
+    color: #1a73e8;
+    font-weight: 700;
+}
+
+.featured-links a:hover,
+.featured-links a:focus {
+    color: #1558b0;
+    text-decoration: underline;
+}
+
 /* Styles du menu principal */
 .menu-grid {
     display: grid;
@@ -508,6 +541,10 @@ h2 {
 
     h1 {
         font-size: 1.8rem;
+    }
+
+    .featured-links {
+        padding: 0.8rem 1rem;
     }
 
     .menu-grid {
