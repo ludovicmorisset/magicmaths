@@ -220,7 +220,6 @@ class RandomAdditionGame {
         this.tablesSelection.classList.remove('hidden');
         this.exerciseContainer.classList.add('hidden');
         this.resultsContainer.classList.add('hidden');
-        this.resultsContainer.classList.add('hidden');
         document.querySelectorAll('.difficulty-selection input').forEach(radio => {
             radio.checked = false;
         });
