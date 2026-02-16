@@ -25,6 +25,7 @@ class TimeComprehensionGame {
         this.restartButton = document.getElementById('restartButton');
         this.keypad = document.querySelector('.keypad');
         this.clockImage = document.getElementById('clockImage');
+        this.timePeriodIndicator = document.getElementById('timePeriodIndicator');
 
         this.initializeEventListeners();
     }
@@ -88,6 +89,10 @@ class TimeComprehensionGame {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     }
 
+    getPeriodLabel(hours) {
+        return hours < 12 ? 'Matin (AM)' : 'Après-midi / Soir (PM)';
+    }
+
     generateQuestions() {
         this.questions = [];
         const minuteStep = this.getMinuteStep();
@@ -146,6 +151,7 @@ class TimeComprehensionGame {
         const question = this.questions[this.currentQuestion - 1];
         this.currentAnswer = question.answer;
         this.setClockTime(question.hours, question.minutes);
+        this.timePeriodIndicator.textContent = this.getPeriodLabel(question.hours);
 
         this.answerInput.value = '';
         this.answerInput.focus();
