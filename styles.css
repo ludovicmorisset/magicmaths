@@ -799,6 +799,15 @@ h2 {
     margin: 1rem 0;
 }
 
+
+.clock-image {
+    width: 220px;
+    height: 220px;
+    border: 6px solid #2d8e47;
+    border-radius: 50%;
+    background-color: #fff;
+    object-fit: cover;
+}
 .clock-face {
     position: relative;
     width: 220px;

@@ -24,8 +24,7 @@ class TimeComprehensionGame {
         this.startButton = document.getElementById('startButton');
         this.restartButton = document.getElementById('restartButton');
         this.keypad = document.querySelector('.keypad');
-        this.hourHand = document.getElementById('hourHand');
-        this.minuteHand = document.getElementById('minuteHand');
+        this.clockImage = document.getElementById('clockImage');
 
         this.initializeEventListeners();
     }
@@ -107,11 +106,8 @@ class TimeComprehensionGame {
     }
 
     setClockTime(hours, minutes) {
-        const minuteAngle = (minutes / 60) * 360;
-        const hourAngle = ((hours % 12) / 12) * 360 + (minutes / 60) * 30;
-
-        this.minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
-        this.hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+        const clockTime = this.formatTime(hours, minutes).replace(':', 'h');
+        this.clockImage.src = `https://randoheure.fr/clock?time=${clockTime}`;
     }
 
     startGame() {
