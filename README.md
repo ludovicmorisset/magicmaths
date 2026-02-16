@@ -17,10 +17,9 @@ L'application est servie par **Nginx** et déployable facilement avec **Docker /
 
 ## Installation rapide (Docker Compose)
 
-1. Clonez le dépôt et placez-vous à la racine :
+1. Placez-vous dans le dossier du projet (sans Git) :
    ```bash
-   git clone <url-du-repo>
-   cd mathematiques
+   cd /chemin/vers/mathematiques
    ```
 2. Lancez l'application :
    ```bash
@@ -28,6 +27,30 @@ L'application est servie par **Nginx** et déployable facilement avec **Docker /
    ```
 3. Ouvrez votre navigateur :
    - http://localhost:1987
+
+## Publier l'image Docker (sans Git)
+
+1. Définissez le nom de l'image :
+   ```bash
+   export MATHS_APP_IMAGE=docker.io/<votre-user>/mathematiques:1.0.0
+   ```
+2. Construisez l'image :
+   ```bash
+   docker compose build
+   ```
+3. Connectez-vous au registre :
+   ```bash
+   docker login
+   ```
+4. Poussez l'image :
+   ```bash
+   docker compose push
+   ```
+5. Déployez sur un serveur avec la même variable :
+   ```bash
+   export MATHS_APP_IMAGE=docker.io/<votre-user>/mathematiques:1.0.0
+   docker compose up -d
+   ```
 
 ## Commandes utiles
 
