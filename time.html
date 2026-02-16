@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compréhension de l'heure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Compréhension de l'heure</h1>
+
+        <div class="tables-selection">
+            <h2>Choisissez la difficulté</h2>
+            <div class="difficulty-selection">
+                <label><input type="radio" name="difficulty" value="easy" checked> Facile (heures pleines)</label>
+                <label><input type="radio" name="difficulty" value="medium"> Moyen (pas de 15 min)</label>
+                <label><input type="radio" name="difficulty" value="hard"> Difficile (pas de 5 min)</label>
+            </div>
+            <button type="button" id="startButton" class="btn">Commencer</button>
+            <a href="index.html" class="btn">Retour au menu</a>
+        </div>
+
+        <div class="exercise-container hidden">
+            <div class="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="currentQuestion">1</span>/10
+                </div>
+            </div>
+
+            <div class="question-container">
+                <p class="exercise-prompt">Lis l'horloge et écris l'heure au format HH:MM.</p>
+
+                <div class="clock" aria-label="Horloge analogique">
+                    <div class="clock-face">
+                        <div class="hand hour-hand" id="hourHand"></div>
+                        <div class="hand minute-hand" id="minuteHand"></div>
+                        <div class="clock-center"></div>
+                    </div>
+                </div>
+
+                <div class="question text-question">
+                    <label for="answer" class="sr-only">Votre réponse au format HH:MM</label>
+                    <input type="text" id="answer" placeholder="HH:MM" inputmode="numeric" maxlength="5" aria-label="Votre réponse au format HH:MM" autofocus>
+                </div>
+
+                <div class="buttons-container">
+                    <button type="button" id="validateButton" class="btn validate-btn">Valider</button>
+                    <button type="button" id="nextButton" class="btn next-btn hidden">Suivant</button>
+                </div>
+                <div class="error-message" id="errorMessage" role="status" aria-live="assertive"></div>
+                <div class="success-message" id="successMessage" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="keypad keypad-time">
+                <button type="button" class="key">1</button>
+                <button type="button" class="key">2</button>
+                <button type="button" class="key">3</button>
+                <button type="button" class="key">4</button>
+                <button type="button" class="key">5</button>
+                <button type="button" class="key">6</button>
+                <button type="button" class="key">7</button>
+                <button type="button" class="key">8</button>
+                <button type="button" class="key">9</button>
+                <button type="button" class="key">:</button>
+                <button type="button" class="key">0</button>
+                <button type="button" class="key delete" aria-label="Effacer">⌫</button>
+            </div>
+        </div>
+
+        <div class="results hidden">
+            <h2>Résultats</h2>
+            <div class="score-time">
+                <p>Score: <span id="score">0</span>/10</p>
+                <p>Temps: <span id="time">0</span>s</p>
+            </div>
+            <div class="detailed-results">
+                <h3>Détail des réponses</h3>
+                <div id="answersList"></div>
+            </div>
+            <button type="button" class="btn" id="restartButton">Recommencer</button>
+            <a href="index.html" class="btn">Retour au menu</a>
+        </div>
+    </div>
+
+    <script src="time.js"></script>
+</body>
+</html>
