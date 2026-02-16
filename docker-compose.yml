@@ -1,5 +1,6 @@
 services:
   web:
+    image: ${MATHS_APP_IMAGE:-mathematiques:local}
     build:
       context: .
       dockerfile: Dockerfile
