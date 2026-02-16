@@ -106,8 +106,31 @@ class TimeComprehensionGame {
     }
 
     setClockTime(hours, minutes) {
-        const clockTime = this.formatTime(hours, minutes).replace(':', 'h');
-        this.clockImage.src = `https://randoheure.fr/clock?time=${clockTime}`;
+        const hourValue = hours % 12;
+        const minuteAngle = (minutes / 60) * 360;
+        const hourAngle = (hourValue / 12) * 360 + (minutes / 60) * 30;
+        const minuteRadians = (minuteAngle - 90) * (Math.PI / 180);
+        const hourRadians = (hourAngle - 90) * (Math.PI / 180);
+
+        const minuteHandX = 120 + Math.cos(minuteRadians) * 72;
+        const minuteHandY = 120 + Math.sin(minuteRadians) * 72;
+        const hourHandX = 120 + Math.cos(hourRadians) * 48;
+        const hourHandY = 120 + Math.sin(hourRadians) * 48;
+
+        const markers = Array.from({ length: 12 }, (_, index) => {
+            const markerRadians = ((index * 30) - 90) * (Math.PI / 180);
+            const outerX = 120 + Math.cos(markerRadians) * 95;
+            const outerY = 120 + Math.sin(markerRadians) * 95;
+            const innerRadius = index % 3 === 0 ? 82 : 88;
+            const innerX = 120 + Math.cos(markerRadians) * innerRadius;
+            const innerY = 120 + Math.sin(markerRadians) * innerRadius;
+            const width = index % 3 === 0 ? 4 : 2;
+            return `<line x1="${innerX.toFixed(2)}" y1="${innerY.toFixed(2)}" x2="${outerX.toFixed(2)}" y2="${outerY.toFixed(2)}" stroke="#2f2f2f" stroke-width="${width}" stroke-linecap="round"/>`;
+        }).join('');
+
+        const clockSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Horloge indiquant ${this.formatTime(hours, minutes)}"><rect width="240" height="240" rx="24" fill="#ffffff"/><circle cx="120" cy="120" r="96" fill="#f9fbff" stroke="#1a73e8" stroke-width="6"/>${markers}<line x1="120" y1="120" x2="${hourHandX.toFixed(2)}" y2="${hourHandY.toFixed(2)}" stroke="#1a73e8" stroke-width="8" stroke-linecap="round"/><line x1="120" y1="120" x2="${minuteHandX.toFixed(2)}" y2="${minuteHandY.toFixed(2)}" stroke="#d93025" stroke-width="5" stroke-linecap="round"/><circle cx="120" cy="120" r="7" fill="#2f2f2f"/></svg>`;
+
+        this.clockImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(clockSvg)}`;
     }
 
     startGame() {
