@@ -1,10 +1,14 @@
 services:
-  web:
+  MagicMaths:
     image: ${MATHS_APP_IMAGE:-mathematiques:local}
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: maths-app
+    container_name: MagicMaths
+    labels:
+      - glance.name: MagicMaths
+      - glance.description: "Une application de mathématiques pour les étudiants"
+      - glance.version: "1.0.0"
     ports:
       - "1987:80"
     restart: unless-stopped
@@ -14,3 +18,9 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    networks:
+      - reseau_interne
+
+networks:
+  reseau_interne:
+    driver: bridge
