@@ -608,12 +608,16 @@ button#restartButton:focus-visible {
 /* Styles du menu principal */
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
     margin: 1.5rem auto;
     max-width: 1200px;
     padding: 0 1rem;
     width: 100%;
+}
+
+.home-container {
+    max-width: 1200px;
 }
 
 .menu-item {
@@ -677,7 +681,7 @@ button#restartButton:focus-visible {
     }
 
     .menu-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
         margin: 1rem auto;
     }
