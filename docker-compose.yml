@@ -9,6 +9,8 @@ services:
       - glance.name: MagicMaths
       - glance.description: "Une application de mathématiques pour les étudiants"
       - glance.version: "1.0.0"
+      - glance.icon: si:libreofficemath
+      - glance.url: https://maths.tessirom.fr
     ports:
       - "1987:80"
     restart: unless-stopped
