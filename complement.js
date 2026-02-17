@@ -1,4 +1,4 @@
-class ComplementGame {
+class JeuComplements {
     constructor() {
         this.currentQuestion = 1;
         this.score = 0;
@@ -215,5 +215,5 @@ class ComplementGame {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new ComplementGame();
+    new JeuComplements();
 });

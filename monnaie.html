@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compréhension de l'heure</title>
+    <title>Compréhension de la monnaie</title>
+    <meta name="description" content="Exercices de rendu de monnaie en euros et centimes avec trois niveaux de difficulté.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap" rel="stylesheet">
@@ -11,14 +12,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Compréhension de l'heure</h1>
+        <h1>Compréhension de la monnaie</h1>
 
         <div class="tables-selection">
             <h2>Choisissez la difficulté</h2>
             <div class="difficulty-selection">
-                <label><input type="radio" name="difficulty" value="easy" checked> Facile (heures pleines)</label>
-                <label><input type="radio" name="difficulty" value="medium"> Moyen (pas de 15 min)</label>
-                <label><input type="radio" name="difficulty" value="hard"> Difficile (pas de 5 min)</label>
+                <label><input type="radio" name="difficulty" value="facile" checked> Facile (euros entiers)</label>
+                <label><input type="radio" name="difficulty" value="moyen"> Moyen (avec centimes)</label>
+                <label><input type="radio" name="difficulty" value="difficile"> Difficile (montants plus grands)</label>
             </div>
             <button type="button" id="startButton" class="btn">Commencer</button>
             <a href="index.html" class="btn">Retour au menu</a>
@@ -35,16 +36,12 @@
             </div>
 
             <div class="question-container">
-                <p class="exercise-prompt">Lis l'horloge et écris l'heure au format HH:MM.</p>
-
-                <div class="clock" aria-label="Horloge analogique">
-                    <img id="clockImage" class="clock-image" alt="Horloge de la question" />
-                </div>
-                <p id="timePeriodIndicator" class="time-period-indicator" aria-live="polite"></p>
+                <p class="exercise-prompt" id="scenarioText"></p>
 
                 <div class="question text-question">
-                    <label for="answer" class="sr-only">Votre réponse au format HH:MM</label>
-                    <input type="text" id="answer" placeholder="HH:MM" inputmode="numeric" maxlength="5" aria-label="Votre réponse au format HH:MM" autofocus>
+                    <label for="answer" class="sr-only">Votre réponse en euros</label>
+                    <input type="text" id="answer" placeholder="0,00" inputmode="decimal" aria-label="Votre réponse en euros" autofocus>
+                    <span class="currency-suffix">€</span>
                 </div>
 
                 <div class="buttons-container">
@@ -55,17 +52,17 @@
                 <div class="success-message" id="successMessage" role="status" aria-live="polite"></div>
             </div>
 
-            <div class="keypad keypad-time">
-                <button type="button" class="key">1</button>
-                <button type="button" class="key">2</button>
-                <button type="button" class="key">3</button>
-                <button type="button" class="key">4</button>
-                <button type="button" class="key">5</button>
-                <button type="button" class="key">6</button>
+            <div class="keypad keypad-money">
                 <button type="button" class="key">7</button>
                 <button type="button" class="key">8</button>
                 <button type="button" class="key">9</button>
-                <button type="button" class="key">:</button>
+                <button type="button" class="key">4</button>
+                <button type="button" class="key">5</button>
+                <button type="button" class="key">6</button>
+                <button type="button" class="key">1</button>
+                <button type="button" class="key">2</button>
+                <button type="button" class="key">3</button>
+                <button type="button" class="key symbol">,</button>
                 <button type="button" class="key">0</button>
                 <button type="button" class="key delete" aria-label="Effacer">⌫</button>
             </div>
@@ -86,6 +83,6 @@
         </div>
     </div>
 
-    <script src="time.js"></script>
+    <script src="monnaie.js"></script>
 </body>
 </html>

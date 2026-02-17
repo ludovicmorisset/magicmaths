@@ -12,7 +12,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('img/wallpaper.png');
+    background-image: url('img/fond-ecran.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -178,38 +178,66 @@ h2 {
 
 .keypad {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     margin-bottom: 2rem;
-    max-width: 400px;
+    max-width: 320px;
+    width: 100%;
+    padding: 0.65rem;
+    background: linear-gradient(180deg, #eef2f7 0%, #e4e9f0 100%);
+    border: 1px solid #cfd8e3;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 4px 10px rgba(0, 0, 0, 0.08);
     margin-left: auto;
     margin-right: auto;
 }
 
 .key {
-    padding: 1rem;
+    padding: 0.95rem;
     font-size: 1.1rem;
-    border: none;
-    background-color: rgba(248, 249, 250, 0.9);
-    border-radius: 6px;
+    font-weight: 700;
+    border: 1px solid #c8d1db;
+    background: linear-gradient(180deg, #ffffff 0%, #f2f5f9 100%);
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
-    border: 2px solid transparent;
+    transition: transform 0.08s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    box-shadow: 0 2px 0 #c5ced8, 0 4px 8px rgba(0, 0, 0, 0.06);
     font-family: 'Walter Turncoat', cursive;
 }
 
 .key:hover {
-    background-color: #e8f0fe;
-    border-color: #2d8e47;
+    border-color: #8db2e8;
+    box-shadow: 0 2px 0 #b8c4d3, 0 5px 10px rgba(0, 0, 0, 0.08);
+}
+
+.key:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #b8c4d3;
+}
+
+.key.symbol {
+    background: linear-gradient(180deg, #f3f8ff 0%, #e6effc 100%);
+    border-color: #b9cdee;
+    color: #1a4b8f;
+}
+
+.key.symbol:hover {
+    border-color: #8db2e8;
 }
 
 .key.delete {
-    background-color: #fce8e6;
-    color: #d93025;
+    background: linear-gradient(180deg, #feeceb 0%, #fbd6d2 100%);
+    border-color: #efb7b0;
+    color: #b42318;
 }
 
 .key.delete:hover {
-    background-color: #fadad6;
+    border-color: #2d8e47;
+    box-shadow: 0 2px 0 #dfaca6, 0 5px 10px rgba(0, 0, 0, 0.08);
+}
+
+.key.zero {
+    grid-column: span 2;
 }
 
 .btn {
@@ -225,9 +253,62 @@ h2 {
     font-family: 'Walter Turncoat', cursive;
 }
 
+a.btn {
+    border: 1px solid #98a4b3;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #f6f8fb 0%, #e8edf4 100%);
+    color: #233042;
+    box-shadow: 0 2px 0 #c7d0db, 0 4px 8px rgba(0, 0, 0, 0.08);
+    text-decoration: none;
+}
+
+a.btn:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #edf2f8 100%);
+    color: #1b2736;
+    box-shadow: 0 2px 0 #c7d0db, 0 5px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+a.btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+a.btn:focus-visible {
+    outline: 3px solid rgba(26, 115, 232, 0.3);
+    outline-offset: 2px;
+}
+
 .btn:hover {
     background-color: #237a3a;
     transform: translateY(-2px);
+}
+
+button#startButton,
+button#restartButton {
+    border: 1px solid #1d5fa8;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #4290f4 0%, #1a73e8 100%);
+    box-shadow: 0 2px 0 #145cb9, 0 5px 10px rgba(0, 0, 0, 0.12);
+}
+
+button#startButton:hover,
+button#restartButton:hover {
+    background: linear-gradient(180deg, #5aa0fa 0%, #2d7feb 100%);
+    box-shadow: 0 2px 0 #145cb9, 0 6px 12px rgba(0, 0, 0, 0.14);
+    transform: translateY(-1px);
+}
+
+button#startButton:active,
+button#restartButton:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
+}
+
+button#startButton:focus-visible,
+button#restartButton:focus-visible {
+    outline: 3px solid rgba(26, 115, 232, 0.3);
+    outline-offset: 2px;
 }
 
 .results {
@@ -394,14 +475,18 @@ h2 {
 }
 
 .validate-btn {
-    padding: 0.8rem 2rem;
-    font-size: 1.1rem;
-    background-color: #34a853;
+    padding: 0.85rem 1.8rem;
+    font-size: 1.05rem;
     min-width: 150px;
+    border: 1px solid #2f8f49;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #45bc65 0%, #2f9a4f 100%);
+    box-shadow: 0 2px 0 #257a3f, 0 5px 10px rgba(0, 0, 0, 0.12);
 }
 
 .validate-btn:hover {
-    background-color: #2d8e47;
+    background: linear-gradient(180deg, #50c870 0%, #35a756 100%);
+    box-shadow: 0 2px 0 #257a3f, 0 6px 12px rgba(0, 0, 0, 0.14);
 }
 
 .buttons-container {
@@ -409,15 +494,37 @@ h2 {
     gap: 1rem;
     justify-content: center;
     margin: 1rem 0;
+    width: 100%;
 }
 
 .next-btn {
-    background-color: #2d8e47;
     min-width: 150px;
+    border: 1px solid #1d5fa8;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #4290f4 0%, #1a73e8 100%);
+    box-shadow: 0 2px 0 #145cb9, 0 5px 10px rgba(0, 0, 0, 0.12);
+}
+
+.next-btn:active,
+.validate-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
+}
+
+.validate-btn:hover,
+.next-btn:hover {
+    transform: translateY(-1px);
+}
+
+.validate-btn:focus-visible,
+.next-btn:focus-visible {
+    outline: 3px solid rgba(26, 115, 232, 0.3);
+    outline-offset: 2px;
 }
 
 .next-btn:hover {
-    background-color: #237a3a;
+    background: linear-gradient(180deg, #5aa0fa 0%, #2d7feb 100%);
+    box-shadow: 0 2px 0 #145cb9, 0 6px 12px rgba(0, 0, 0, 0.14);
 }
 
 .difficulty-selection {
@@ -596,8 +703,10 @@ h2 {
     }
 
     .keypad {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 0.4rem;
+        max-width: 300px;
+        padding: 0.55rem;
     }
 
     .key {
@@ -609,6 +718,12 @@ h2 {
         padding: 0.8rem 1.5rem;
         font-size: 0.9rem;
         min-width: 180px;
+    }
+
+    .validate-btn,
+    .next-btn {
+        min-width: 140px;
+        padding: 0.75rem 1.3rem;
     }
 }
 
@@ -661,6 +776,8 @@ h2 {
 
     .keypad {
         grid-template-columns: repeat(3, 1fr);
+        max-width: 280px;
+        padding: 0.5rem;
     }
 
     .key {
@@ -672,6 +789,18 @@ h2 {
         padding: 0.6rem 1.2rem;
         font-size: 0.8rem;
         min-width: 150px;
+    }
+
+    .buttons-container {
+        gap: 0.7rem;
+        margin: 0.8rem 0;
+    }
+
+    .validate-btn,
+    .next-btn {
+        min-width: 120px;
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
     }
 
     .progress {
@@ -729,6 +858,8 @@ h2 {
     .keypad {
         grid-template-columns: repeat(3, 1fr);
         gap: 0.3rem;
+        max-width: 260px;
+        padding: 0.45rem;
     }
 
     .key {
@@ -740,6 +871,17 @@ h2 {
         padding: 0.5rem 1rem;
         font-size: 0.8rem;
         min-width: 130px;
+    }
+
+    .buttons-container {
+        gap: 0.5rem;
+    }
+
+    .validate-btn,
+    .next-btn {
+        min-width: 104px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
     }
 }
 
@@ -880,6 +1022,5 @@ h2 {
 
 .keypad-time,
 .keypad-money {
-    max-width: 460px;
-    grid-template-columns: repeat(6, 1fr);
+    max-width: 320px;
 }

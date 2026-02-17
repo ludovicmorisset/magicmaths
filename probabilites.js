@@ -1,20 +1,18 @@
-class SubtractionGame {
+class JeuProbabilites {
     constructor() {
-        this.selectedTables = [];
         this.currentQuestion = 1;
         this.score = 0;
         this.questions = [];
         this.currentAnswer = null;
         this.userAnswers = [];
+        this.difficulty = 'facile';
         this.startTime = null;
 
-        // Éléments DOM
         this.tablesSelection = document.querySelector('.tables-selection');
         this.exerciseContainer = document.querySelector('.exercise-container');
         this.resultsContainer = document.querySelector('.results');
         this.currentQuestionSpan = document.getElementById('currentQuestion');
-        this.num1Span = document.getElementById('num1');
-        this.num2Span = document.getElementById('num2');
+        this.eventText = document.getElementById('eventText');
         this.answerInput = document.getElementById('answer');
         this.scoreSpan = document.getElementById('score');
         this.timeSpan = document.getElementById('time');
@@ -25,66 +23,74 @@ class SubtractionGame {
         this.nextButton = document.getElementById('nextButton');
         this.progressFill = document.getElementById('progressFill');
 
-        // Boutons
         this.startButton = document.getElementById('startButton');
         this.restartButton = document.getElementById('restartButton');
-
-        // Pavé numérique
         this.keypad = document.querySelector('.keypad');
 
         this.initializeEventListeners();
     }
 
     initializeEventListeners() {
-        // Gestion des tables sélectionnées
-        document.querySelectorAll('.tables-grid input').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                this.selectedTables = Array.from(document.querySelectorAll('.tables-grid input:checked'))
-                    .map(input => parseInt(input.value));
+        document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                this.difficulty = event.target.value;
             });
         });
 
-        // Bouton de démarrage
-        this.startButton.addEventListener('click', () => {
-            if (this.selectedTables.length === 0) {
-                alert('Veuillez sélectionner au moins une table de soustraction');
-                return;
-            }
-            this.startGame();
-        });
-
-        // Recommencer
+        this.startButton.addEventListener('click', () => this.startGame());
         this.restartButton.addEventListener('click', () => this.restart());
 
-        // Gestion du pavé numérique
-        this.keypad.addEventListener('click', (e) => {
-            if (e.target.classList.contains('key')) {
-                if (e.target.classList.contains('delete')) {
-                    this.answerInput.value = this.answerInput.value.slice(0, -1);
-                } else {
-                    this.answerInput.value += e.target.textContent;
-                }
+        this.keypad.addEventListener('click', (event) => {
+            if (!event.target.classList.contains('key')) {
+                return;
             }
+            if (event.target.classList.contains('delete')) {
+                this.answerInput.value = this.answerInput.value.slice(0, -1);
+                return;
+            }
+            this.answerInput.value += event.target.textContent;
         });
 
-        // Bouton de validation
         this.validateButton.addEventListener('click', () => {
             if (this.answerInput.value !== '') {
                 this.checkAnswer();
             }
         });
 
-        // Bouton suivant
-        this.nextButton.addEventListener('click', () => {
-            this.nextQuestion();
-        });
+        this.nextButton.addEventListener('click', () => this.nextQuestion());
 
-        // Touche Entrée pour valider aussi
-        this.answerInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && this.answerInput.value !== '') {
+        this.answerInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter' && this.answerInput.value !== '') {
                 this.checkAnswer();
             }
         });
+    }
+
+    getDenominatorPool() {
+        const pools = {
+            facile: [2, 4, 5, 10],
+            moyen: [4, 5, 10, 20, 25],
+            difficile: [4, 5, 10, 20, 25, 50, 100]
+        };
+        return pools[this.difficulty];
+    }
+
+    buildQuestion() {
+        const denominatorPool = this.getDenominatorPool();
+        const total = denominatorPool[Math.floor(Math.random() * denominatorPool.length)];
+        const favorable = Math.floor(Math.random() * (total + 1));
+        const answer = Math.round((favorable / total) * 100);
+
+        const contexts = [
+            `Dans un sac il y a ${favorable} billes rouges sur ${total} billes. Probabilité de tirer une rouge`,
+            `Une roue est divisée en ${total} parts égales dont ${favorable} gagnantes. Probabilité de tomber sur une part gagnante`,
+            `Dans une boîte, ${favorable} cartes sont marquées "A" sur ${total} cartes. Probabilité de tirer "A"`
+        ];
+
+        return {
+            text: contexts[Math.floor(Math.random() * contexts.length)],
+            answer
+        };
     }
 
     startGame() {
@@ -98,27 +104,20 @@ class SubtractionGame {
     generateQuestions() {
         this.questions = [];
         for (let i = 0; i < 10; i++) {
-            const table = this.selectedTables[Math.floor(Math.random() * this.selectedTables.length)];
-            const subtrahend = Math.floor(Math.random() * table) + 1;
-            this.questions.push({
-                num1: table,
-                num2: subtrahend,
-                answer: table - subtrahend
-            });
+            this.questions.push(this.buildQuestion());
         }
     }
 
     showQuestion() {
         const question = this.questions[this.currentQuestion - 1];
-        this.num1Span.textContent = question.num1;
-        this.num2Span.textContent = question.num2;
+        this.eventText.textContent = `${question.text} = `;
         this.currentAnswer = question.answer;
         this.answerInput.value = '';
+        this.answerInput.disabled = false;
         this.answerInput.focus();
         this.hideMessages();
         this.validateButton.classList.remove('hidden');
         this.nextButton.classList.add('hidden');
-        this.answerInput.disabled = false;
     }
 
     hideMessages() {
@@ -127,27 +126,27 @@ class SubtractionGame {
     }
 
     checkAnswer() {
-        const userAnswer = parseInt(this.answerInput.value);
+        const userAnswer = parseInt(this.answerInput.value, 10);
         this.hideMessages();
 
-        // Enregistrer la réponse de l'utilisateur
+        const question = this.questions[this.currentQuestion - 1];
+        const isCorrect = userAnswer === this.currentAnswer;
         this.userAnswers.push({
-            question: `${this.questions[this.currentQuestion - 1].num1} - ${this.questions[this.currentQuestion - 1].num2}`,
-            userAnswer: userAnswer,
+            question: question.text,
+            userAnswer,
             correctAnswer: this.currentAnswer,
-            isCorrect: userAnswer === this.currentAnswer
+            isCorrect
         });
 
-        if (userAnswer === this.currentAnswer) {
+        if (isCorrect) {
             this.score++;
             this.successMessage.textContent = 'Bravo ! C\'est correct !';
             this.successMessage.classList.add('show');
         } else {
-            this.errorMessage.textContent = `Dommage ! La réponse était ${this.currentAnswer}`;
+            this.errorMessage.textContent = `Dommage ! La réponse était ${this.currentAnswer}%`;
             this.errorMessage.classList.add('show');
         }
 
-        // Désactiver le bouton valider et afficher le bouton suivant
         this.validateButton.classList.add('hidden');
         this.nextButton.classList.remove('hidden');
         this.answerInput.disabled = true;
@@ -159,25 +158,22 @@ class SubtractionGame {
             this.currentQuestionSpan.textContent = this.currentQuestion;
             this.progressFill.style.width = `${(this.currentQuestion - 1) * 10}%`;
             this.showQuestion();
-        } else {
-            this.showResults();
+            return;
         }
+        this.showResults();
     }
 
     showResults() {
         this.exerciseContainer.classList.add('hidden');
         this.resultsContainer.classList.remove('hidden');
-        
-        // Calculer le temps total
+
         const endTime = Date.now();
         const timeElapsed = Math.floor((endTime - this.startTime) / 1000);
         const minutes = Math.floor(timeElapsed / 60);
         const seconds = timeElapsed % 60;
-        
-        // Afficher le score et le temps
+
         this.scoreSpan.textContent = this.score;
         this.timeSpan.textContent = `${minutes} min ${seconds}`;
-        
         this.displayDetailedResults();
     }
 
@@ -186,25 +182,25 @@ class SubtractionGame {
         this.userAnswers.forEach((answer, index) => {
             const answerElement = document.createElement('div');
             answerElement.className = `answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
-            
+
             const questionSpan = document.createElement('span');
             questionSpan.className = 'question';
             questionSpan.textContent = `${index + 1}. ${answer.question} = `;
-            
+
             const userAnswerSpan = document.createElement('span');
             userAnswerSpan.className = 'user-answer';
-            userAnswerSpan.textContent = answer.userAnswer;
-            
-            const correctAnswerSpan = document.createElement('span');
-            correctAnswerSpan.className = 'correct-answer';
-            correctAnswerSpan.textContent = answer.isCorrect ? '' : `(La bonne réponse était ${answer.correctAnswer})`;
-            
+            userAnswerSpan.textContent = `${answer.userAnswer}%`;
+
             answerElement.appendChild(questionSpan);
             answerElement.appendChild(userAnswerSpan);
+
             if (!answer.isCorrect) {
+                const correctAnswerSpan = document.createElement('span');
+                correctAnswerSpan.className = 'correct-answer';
+                correctAnswerSpan.textContent = `(La bonne réponse était ${answer.correctAnswer}%)`;
                 answerElement.appendChild(correctAnswerSpan);
             }
-            
+
             this.answersList.appendChild(answerElement);
         });
     }
@@ -214,16 +210,13 @@ class SubtractionGame {
         this.score = 0;
         this.userAnswers = [];
         this.currentQuestionSpan.textContent = this.currentQuestion;
-        this.resultsContainer.classList.add('hidden');
+        this.progressFill.style.width = '0%';
         this.tablesSelection.classList.remove('hidden');
-        document.querySelectorAll('.tables-grid input').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        this.selectedTables = [];
+        this.exerciseContainer.classList.add('hidden');
+        this.resultsContainer.classList.add('hidden');
     }
 }
 
-// Initialisation du jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new SubtractionGame();
+    new JeuProbabilites();
 });

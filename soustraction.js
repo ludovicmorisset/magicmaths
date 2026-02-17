@@ -1,18 +1,20 @@
-class ProbabilityGame {
+class JeuSoustraction {
     constructor() {
+        this.selectedTables = [];
         this.currentQuestion = 1;
         this.score = 0;
         this.questions = [];
         this.currentAnswer = null;
         this.userAnswers = [];
-        this.difficulty = 'easy';
         this.startTime = null;
 
+        // Éléments DOM
         this.tablesSelection = document.querySelector('.tables-selection');
         this.exerciseContainer = document.querySelector('.exercise-container');
         this.resultsContainer = document.querySelector('.results');
         this.currentQuestionSpan = document.getElementById('currentQuestion');
-        this.eventText = document.getElementById('eventText');
+        this.num1Span = document.getElementById('num1');
+        this.num2Span = document.getElementById('num2');
         this.answerInput = document.getElementById('answer');
         this.scoreSpan = document.getElementById('score');
         this.timeSpan = document.getElementById('time');
@@ -23,74 +25,66 @@ class ProbabilityGame {
         this.nextButton = document.getElementById('nextButton');
         this.progressFill = document.getElementById('progressFill');
 
+        // Boutons
         this.startButton = document.getElementById('startButton');
         this.restartButton = document.getElementById('restartButton');
+
+        // Pavé numérique
         this.keypad = document.querySelector('.keypad');
 
         this.initializeEventListeners();
     }
 
     initializeEventListeners() {
-        document.querySelectorAll('input[name="difficulty"]').forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                this.difficulty = event.target.value;
+        // Gestion des tables sélectionnées
+        document.querySelectorAll('.tables-grid input').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                this.selectedTables = Array.from(document.querySelectorAll('.tables-grid input:checked'))
+                    .map(input => parseInt(input.value));
             });
         });
 
-        this.startButton.addEventListener('click', () => this.startGame());
-        this.restartButton.addEventListener('click', () => this.restart());
-
-        this.keypad.addEventListener('click', (event) => {
-            if (!event.target.classList.contains('key')) {
+        // Bouton de démarrage
+        this.startButton.addEventListener('click', () => {
+            if (this.selectedTables.length === 0) {
+                alert('Veuillez sélectionner au moins une table de soustraction');
                 return;
             }
-            if (event.target.classList.contains('delete')) {
-                this.answerInput.value = this.answerInput.value.slice(0, -1);
-                return;
-            }
-            this.answerInput.value += event.target.textContent;
+            this.startGame();
         });
 
+        // Recommencer
+        this.restartButton.addEventListener('click', () => this.restart());
+
+        // Gestion du pavé numérique
+        this.keypad.addEventListener('click', (e) => {
+            if (e.target.classList.contains('key')) {
+                if (e.target.classList.contains('delete')) {
+                    this.answerInput.value = this.answerInput.value.slice(0, -1);
+                } else {
+                    this.answerInput.value += e.target.textContent;
+                }
+            }
+        });
+
+        // Bouton de validation
         this.validateButton.addEventListener('click', () => {
             if (this.answerInput.value !== '') {
                 this.checkAnswer();
             }
         });
 
-        this.nextButton.addEventListener('click', () => this.nextQuestion());
+        // Bouton suivant
+        this.nextButton.addEventListener('click', () => {
+            this.nextQuestion();
+        });
 
-        this.answerInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter' && this.answerInput.value !== '') {
+        // Touche Entrée pour valider aussi
+        this.answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && this.answerInput.value !== '') {
                 this.checkAnswer();
             }
         });
-    }
-
-    getDenominatorPool() {
-        const pools = {
-            easy: [2, 4, 5, 10],
-            medium: [4, 5, 10, 20, 25],
-            hard: [4, 5, 10, 20, 25, 50, 100]
-        };
-        return pools[this.difficulty];
-    }
-
-    buildQuestion() {
-        const denominatorPool = this.getDenominatorPool();
-        const total = denominatorPool[Math.floor(Math.random() * denominatorPool.length)];
-        const favorable = Math.floor(Math.random() * (total + 1));
-        const answer = Math.round((favorable / total) * 100);
-
-        const contexts = [
-            `Dans un sac il y a ${favorable} billes rouges sur ${total} billes. Probabilité de tirer une rouge`,
-            `Une roue est divisée en ${total} parts égales dont ${favorable} gagnantes. Probabilité de tomber sur une part gagnante`,
-            `Dans une boîte, ${favorable} cartes sont marquées "A" sur ${total} cartes. Probabilité de tirer "A"`
-        ];
-
-        return {
-            text: contexts[Math.floor(Math.random() * contexts.length)],
-            answer
-        };
     }
 
     startGame() {
@@ -104,20 +98,27 @@ class ProbabilityGame {
     generateQuestions() {
         this.questions = [];
         for (let i = 0; i < 10; i++) {
-            this.questions.push(this.buildQuestion());
+            const table = this.selectedTables[Math.floor(Math.random() * this.selectedTables.length)];
+            const subtrahend = Math.floor(Math.random() * table) + 1;
+            this.questions.push({
+                num1: table,
+                num2: subtrahend,
+                answer: table - subtrahend
+            });
         }
     }
 
     showQuestion() {
         const question = this.questions[this.currentQuestion - 1];
-        this.eventText.textContent = `${question.text} = `;
+        this.num1Span.textContent = question.num1;
+        this.num2Span.textContent = question.num2;
         this.currentAnswer = question.answer;
         this.answerInput.value = '';
-        this.answerInput.disabled = false;
         this.answerInput.focus();
         this.hideMessages();
         this.validateButton.classList.remove('hidden');
         this.nextButton.classList.add('hidden');
+        this.answerInput.disabled = false;
     }
 
     hideMessages() {
@@ -126,27 +127,27 @@ class ProbabilityGame {
     }
 
     checkAnswer() {
-        const userAnswer = parseInt(this.answerInput.value, 10);
+        const userAnswer = parseInt(this.answerInput.value);
         this.hideMessages();
 
-        const question = this.questions[this.currentQuestion - 1];
-        const isCorrect = userAnswer === this.currentAnswer;
+        // Enregistrer la réponse de l'utilisateur
         this.userAnswers.push({
-            question: question.text,
-            userAnswer,
+            question: `${this.questions[this.currentQuestion - 1].num1} - ${this.questions[this.currentQuestion - 1].num2}`,
+            userAnswer: userAnswer,
             correctAnswer: this.currentAnswer,
-            isCorrect
+            isCorrect: userAnswer === this.currentAnswer
         });
 
-        if (isCorrect) {
+        if (userAnswer === this.currentAnswer) {
             this.score++;
             this.successMessage.textContent = 'Bravo ! C\'est correct !';
             this.successMessage.classList.add('show');
         } else {
-            this.errorMessage.textContent = `Dommage ! La réponse était ${this.currentAnswer}%`;
+            this.errorMessage.textContent = `Dommage ! La réponse était ${this.currentAnswer}`;
             this.errorMessage.classList.add('show');
         }
 
+        // Désactiver le bouton valider et afficher le bouton suivant
         this.validateButton.classList.add('hidden');
         this.nextButton.classList.remove('hidden');
         this.answerInput.disabled = true;
@@ -158,22 +159,25 @@ class ProbabilityGame {
             this.currentQuestionSpan.textContent = this.currentQuestion;
             this.progressFill.style.width = `${(this.currentQuestion - 1) * 10}%`;
             this.showQuestion();
-            return;
+        } else {
+            this.showResults();
         }
-        this.showResults();
     }
 
     showResults() {
         this.exerciseContainer.classList.add('hidden');
         this.resultsContainer.classList.remove('hidden');
-
+        
+        // Calculer le temps total
         const endTime = Date.now();
         const timeElapsed = Math.floor((endTime - this.startTime) / 1000);
         const minutes = Math.floor(timeElapsed / 60);
         const seconds = timeElapsed % 60;
-
+        
+        // Afficher le score et le temps
         this.scoreSpan.textContent = this.score;
         this.timeSpan.textContent = `${minutes} min ${seconds}`;
+        
         this.displayDetailedResults();
     }
 
@@ -182,25 +186,25 @@ class ProbabilityGame {
         this.userAnswers.forEach((answer, index) => {
             const answerElement = document.createElement('div');
             answerElement.className = `answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
-
+            
             const questionSpan = document.createElement('span');
             questionSpan.className = 'question';
             questionSpan.textContent = `${index + 1}. ${answer.question} = `;
-
+            
             const userAnswerSpan = document.createElement('span');
             userAnswerSpan.className = 'user-answer';
-            userAnswerSpan.textContent = `${answer.userAnswer}%`;
-
+            userAnswerSpan.textContent = answer.userAnswer;
+            
+            const correctAnswerSpan = document.createElement('span');
+            correctAnswerSpan.className = 'correct-answer';
+            correctAnswerSpan.textContent = answer.isCorrect ? '' : `(La bonne réponse était ${answer.correctAnswer})`;
+            
             answerElement.appendChild(questionSpan);
             answerElement.appendChild(userAnswerSpan);
-
             if (!answer.isCorrect) {
-                const correctAnswerSpan = document.createElement('span');
-                correctAnswerSpan.className = 'correct-answer';
-                correctAnswerSpan.textContent = `(La bonne réponse était ${answer.correctAnswer}%)`;
                 answerElement.appendChild(correctAnswerSpan);
             }
-
+            
             this.answersList.appendChild(answerElement);
         });
     }
@@ -210,13 +214,16 @@ class ProbabilityGame {
         this.score = 0;
         this.userAnswers = [];
         this.currentQuestionSpan.textContent = this.currentQuestion;
-        this.progressFill.style.width = '0%';
-        this.tablesSelection.classList.remove('hidden');
-        this.exerciseContainer.classList.add('hidden');
         this.resultsContainer.classList.add('hidden');
+        this.tablesSelection.classList.remove('hidden');
+        document.querySelectorAll('.tables-grid input').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        this.selectedTables = [];
     }
 }
 
+// Initialisation du jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new ProbabilityGame();
+    new JeuSoustraction();
 });

@@ -7,14 +7,14 @@ Le projet est une application web statique (HTML/CSS/JS) servie par Nginx et con
 Les points d'exploitation sont maintenant clarifiés :
 - documentation d'installation simplifiée (`README.md`) ;
 - chaîne Docker homogène (`Dockerfile`, `docker-compose.yml`, `nginx.conf`) ;
-- endpoint de santé `/healthz` pour la supervision.
+- point d'accès de santé `/healthz` pour la supervision.
 
 ## Priorités techniques recommandées
 
 ### 1) Réduire la duplication JavaScript (priorité haute)
-**Constat** : `addition.js`, `multiplication.js`, `subtraction.js` et `random-addition.js` partagent une logique proche.
+**Constat** : `addition.js`, `multiplication.js`, `soustraction.js` et `addition-aleatoire.js` partagent une logique proche.
 
-**Amélioration** : factoriser une base commune (ex. `BaseQuizGame`) et spécialiser la génération des questions.
+**Amélioration** : factoriser une base commune (ex. `JeuQuizBase`) et spécialiser la génération des questions.
 
 ---
 
@@ -47,5 +47,5 @@ Les points d'exploitation sont maintenant clarifiés :
 
 1. **Refactor JS** (factorisation logique commune)
 2. **Accessibilité** (ARIA + feedback dynamique)
-3. **Qualité** (lint/test/CI)
+3. **Qualité** (lint/tests/intégration continue)
 4. **Évolutions fonctionnelles**

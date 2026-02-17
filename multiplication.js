@@ -1,4 +1,4 @@
-class MultiplicationGame {
+class JeuMultiplication {
     constructor() {
         this.selectedTables = [];
         this.currentQuestion = 1;
@@ -226,5 +226,5 @@ class MultiplicationGame {
 
 // Initialisation du jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new MultiplicationGame();
+    new JeuMultiplication();
 });

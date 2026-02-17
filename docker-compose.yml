@@ -7,7 +7,7 @@ services:
     container_name: MagicMaths
     labels:
       glance.name: MagicMaths
-      glance.description: "Une application de mathématiques pour les étudiants"
+      glance.description: "Exercices de maths interactifs : tables, heure, monnaie et probabilités"
       glance.version: "1.0.0"
       glance.icon: si:libreofficemath
       glance.url: https://maths.tessirom.fr

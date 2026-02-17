@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tables de Soustraction</title>
+    <title>Compréhension de l'heure</title>
+    <meta name="description" content="Lecture de l'heure sur horloge analogique avec réponse au format HH:MM et niveaux de difficulté.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap" rel="stylesheet">
@@ -11,21 +12,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Tables de Soustraction</h1>
-        
+        <h1>Compréhension de l'heure</h1>
+
         <div class="tables-selection">
-            <h2>Sélectionnez les tables à réviser</h2>
-            <div class="tables-grid">
-                <label><input type="checkbox" value="1"> Table de 1</label>
-                <label><input type="checkbox" value="2"> Table de 2</label>
-                <label><input type="checkbox" value="3"> Table de 3</label>
-                <label><input type="checkbox" value="4"> Table de 4</label>
-                <label><input type="checkbox" value="5"> Table de 5</label>
-                <label><input type="checkbox" value="6"> Table de 6</label>
-                <label><input type="checkbox" value="7"> Table de 7</label>
-                <label><input type="checkbox" value="8"> Table de 8</label>
-                <label><input type="checkbox" value="9"> Table de 9</label>
-                <label><input type="checkbox" value="10"> Table de 10</label>
+            <h2>Choisissez la difficulté</h2>
+            <div class="difficulty-selection">
+                <label><input type="radio" name="difficulty" value="facile" checked> Facile (heures pleines)</label>
+                <label><input type="radio" name="difficulty" value="moyen"> Moyen (pas de 15 min)</label>
+                <label><input type="radio" name="difficulty" value="difficile"> Difficile (pas de 5 min)</label>
             </div>
             <button type="button" id="startButton" class="btn">Commencer</button>
             <a href="index.html" class="btn">Retour au menu</a>
@@ -40,12 +34,20 @@
                     <span id="currentQuestion">1</span>/10
                 </div>
             </div>
+
             <div class="question-container">
-                <div class="question">
-                    <span id="num1"></span> - <span id="num2"></span> = 
-                    <label for="answer" class="sr-only">Votre réponse</label>
-                    <input type="number" id="answer" min="-100" max="100" aria-label="Votre réponse" autofocus>
+                <p class="exercise-prompt">Lis l'horloge et écris l'heure au format HH:MM.</p>
+
+                <div class="clock" aria-label="Horloge analogique">
+                    <img id="clockImage" class="clock-image" alt="Horloge de la question" />
                 </div>
+                <p id="timePeriodIndicator" class="time-period-indicator" aria-live="polite"></p>
+
+                <div class="question text-question">
+                    <label for="answer" class="sr-only">Votre réponse au format HH:MM</label>
+                    <input type="text" id="answer" placeholder="HH:MM" inputmode="numeric" maxlength="5" aria-label="Votre réponse au format HH:MM" autofocus>
+                </div>
+
                 <div class="buttons-container">
                     <button type="button" id="validateButton" class="btn validate-btn">Valider</button>
                     <button type="button" id="nextButton" class="btn next-btn hidden">Suivant</button>
@@ -53,18 +55,19 @@
                 <div class="error-message" id="errorMessage" role="status" aria-live="assertive"></div>
                 <div class="success-message" id="successMessage" role="status" aria-live="polite"></div>
             </div>
-            <div class="keypad">
-                <button type="button" class="key" aria-label="Chiffre 1">1</button>
-                <button type="button" class="key" aria-label="Chiffre 2">2</button>
-                <button type="button" class="key" aria-label="Chiffre 3">3</button>
-                <button type="button" class="key" aria-label="Chiffre 4">4</button>
-                <button type="button" class="key" aria-label="Chiffre 5">5</button>
-                <button type="button" class="key" aria-label="Chiffre 6">6</button>
-                <button type="button" class="key" aria-label="Chiffre 7">7</button>
-                <button type="button" class="key" aria-label="Chiffre 8">8</button>
-                <button type="button" class="key" aria-label="Chiffre 9">9</button>
-                <button type="button" class="key" aria-label="Chiffre 0">0</button>
-                <button type="button" class="key" aria-label="Signe moins">-</button>
+
+            <div class="keypad keypad-time">
+                <button type="button" class="key">7</button>
+                <button type="button" class="key">8</button>
+                <button type="button" class="key">9</button>
+                <button type="button" class="key">4</button>
+                <button type="button" class="key">5</button>
+                <button type="button" class="key">6</button>
+                <button type="button" class="key">1</button>
+                <button type="button" class="key">2</button>
+                <button type="button" class="key">3</button>
+                <button type="button" class="key symbol">:</button>
+                <button type="button" class="key">0</button>
                 <button type="button" class="key delete" aria-label="Effacer">⌫</button>
             </div>
         </div>
@@ -83,6 +86,7 @@
             <a href="index.html" class="btn">Retour au menu</a>
         </div>
     </div>
-    <script src="subtraction.js"></script>
+
+    <script src="heure.js"></script>
 </body>
 </html>

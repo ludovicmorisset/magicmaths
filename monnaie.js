@@ -1,11 +1,11 @@
-class TimeComprehensionGame {
+class JeuMonnaie {
     constructor() {
         this.currentQuestion = 1;
         this.score = 0;
         this.questions = [];
-        this.currentAnswer = '';
+        this.currentAnswer = 0;
         this.userAnswers = [];
-        this.difficulty = 'easy';
+        this.difficulty = 'facile';
         this.startTime = null;
 
         this.tablesSelection = document.querySelector('.tables-selection');
@@ -13,6 +13,7 @@ class TimeComprehensionGame {
         this.resultsContainer = document.querySelector('.results');
         this.currentQuestionSpan = document.getElementById('currentQuestion');
         this.answerInput = document.getElementById('answer');
+        this.scenarioText = document.getElementById('scenarioText');
         this.scoreSpan = document.getElementById('score');
         this.timeSpan = document.getElementById('time');
         this.errorMessage = document.getElementById('errorMessage');
@@ -24,8 +25,6 @@ class TimeComprehensionGame {
         this.startButton = document.getElementById('startButton');
         this.restartButton = document.getElementById('restartButton');
         this.keypad = document.querySelector('.keypad');
-        this.clockImage = document.getElementById('clockImage');
-        this.timePeriodIndicator = document.getElementById('timePeriodIndicator');
 
         this.initializeEventListeners();
     }
@@ -51,13 +50,11 @@ class TimeComprehensionGame {
             }
 
             const value = e.target.textContent;
-            if (value === ':' && this.answerInput.value.includes(':')) {
+            if ((value === ',' || value === '.') && (this.answerInput.value.includes(',') || this.answerInput.value.includes('.'))) {
                 return;
             }
 
-            if (this.answerInput.value.length < 5) {
-                this.answerInput.value += value;
-            }
+            this.answerInput.value += value;
         });
 
         this.validateButton.addEventListener('click', () => {
@@ -75,67 +72,59 @@ class TimeComprehensionGame {
         });
     }
 
-    getMinuteStep() {
-        const steps = {
-            easy: 60,
-            medium: 15,
-            hard: 5
+    toCents(amount) {
+        return Math.round(amount * 100);
+    }
+
+    formatAmount(amount) {
+        return amount.toFixed(2).replace('.', ',');
+    }
+
+    randomChoice(values) {
+        const index = Math.floor(Math.random() * values.length);
+        return values[index];
+    }
+
+    generateQuestion() {
+        const settings = {
+            facile: {
+                prices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                payments: [5, 10, 20]
+            },
+            moyen: {
+                prices: [1.2, 1.5, 2.3, 2.75, 3.6, 4.2, 5.4, 6.8, 7.25, 8.5],
+                payments: [5, 10, 20]
+            },
+            difficile: {
+                prices: [3.45, 5.6, 7.85, 9.9, 12.4, 14.75, 16.2, 18.95, 21.3, 24.8],
+                payments: [20, 50]
+            }
         };
 
-        return steps[this.difficulty];
-    }
+        const config = settings[this.difficulty];
+        let price = this.randomChoice(config.prices);
+        let paid = this.randomChoice(config.payments);
 
-    formatTime(hours, minutes) {
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-    }
+        while (price >= paid) {
+            price = this.randomChoice(config.prices);
+            paid = this.randomChoice(config.payments);
+        }
 
-    getPeriodLabel(hours) {
-        return hours < 12 ? 'Matin (AM)' : 'Après-midi / Soir (PM)';
+        const change = this.toCents(paid) - this.toCents(price);
+
+        return {
+            price,
+            paid,
+            answerCents: change,
+            scenario: `Un article coûte ${this.formatAmount(price)} €. Tu donnes ${this.formatAmount(paid)} €. Quelle monnaie doit-on te rendre ?`
+        };
     }
 
     generateQuestions() {
         this.questions = [];
-        const minuteStep = this.getMinuteStep();
-
         for (let i = 0; i < 10; i++) {
-            const hours = Math.floor(Math.random() * 24);
-            const minuteSlot = Math.floor(Math.random() * (60 / minuteStep));
-            const minutes = minuteSlot * minuteStep;
-
-            this.questions.push({
-                hours,
-                minutes,
-                answer: this.formatTime(hours, minutes)
-            });
+            this.questions.push(this.generateQuestion());
         }
-    }
-
-    setClockTime(hours, minutes) {
-        const hourValue = hours % 12;
-        const minuteAngle = (minutes / 60) * 360;
-        const hourAngle = (hourValue / 12) * 360 + (minutes / 60) * 30;
-        const minuteRadians = (minuteAngle - 90) * (Math.PI / 180);
-        const hourRadians = (hourAngle - 90) * (Math.PI / 180);
-
-        const minuteHandX = 120 + Math.cos(minuteRadians) * 72;
-        const minuteHandY = 120 + Math.sin(minuteRadians) * 72;
-        const hourHandX = 120 + Math.cos(hourRadians) * 48;
-        const hourHandY = 120 + Math.sin(hourRadians) * 48;
-
-        const markers = Array.from({ length: 12 }, (_, index) => {
-            const markerRadians = ((index * 30) - 90) * (Math.PI / 180);
-            const outerX = 120 + Math.cos(markerRadians) * 95;
-            const outerY = 120 + Math.sin(markerRadians) * 95;
-            const innerRadius = index % 3 === 0 ? 82 : 88;
-            const innerX = 120 + Math.cos(markerRadians) * innerRadius;
-            const innerY = 120 + Math.sin(markerRadians) * innerRadius;
-            const width = index % 3 === 0 ? 4 : 2;
-            return `<line x1="${innerX.toFixed(2)}" y1="${innerY.toFixed(2)}" x2="${outerX.toFixed(2)}" y2="${outerY.toFixed(2)}" stroke="#2f2f2f" stroke-width="${width}" stroke-linecap="round"/>`;
-        }).join('');
-
-        const clockSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Horloge indiquant ${this.formatTime(hours, minutes)}"><rect width="240" height="240" rx="24" fill="#ffffff"/><circle cx="120" cy="120" r="96" fill="#f9fbff" stroke="#1a73e8" stroke-width="6"/>${markers}<line x1="120" y1="120" x2="${hourHandX.toFixed(2)}" y2="${hourHandY.toFixed(2)}" stroke="#1a73e8" stroke-width="8" stroke-linecap="round"/><line x1="120" y1="120" x2="${minuteHandX.toFixed(2)}" y2="${minuteHandY.toFixed(2)}" stroke="#d93025" stroke-width="5" stroke-linecap="round"/><circle cx="120" cy="120" r="7" fill="#2f2f2f"/></svg>`;
-
-        this.clockImage.src = `data:image/svg+xml;utf8,${encodeURIComponent(clockSvg)}`;
     }
 
     startGame() {
@@ -149,9 +138,8 @@ class TimeComprehensionGame {
 
     showQuestion() {
         const question = this.questions[this.currentQuestion - 1];
-        this.currentAnswer = question.answer;
-        this.setClockTime(question.hours, question.minutes);
-        this.timePeriodIndicator.textContent = this.getPeriodLabel(question.hours);
+        this.currentAnswer = question.answerCents;
+        this.scenarioText.textContent = question.scenario;
 
         this.answerInput.value = '';
         this.answerInput.focus();
@@ -166,48 +154,47 @@ class TimeComprehensionGame {
         this.successMessage.classList.remove('show');
     }
 
-    normalizeTimeInput(input) {
-        const sanitized = input.trim();
-        if (!/^\d{1,2}:\d{2}$/.test(sanitized)) {
+    normalizeMoneyInput(input) {
+        const sanitized = input.trim().replace('€', '').replace(',', '.');
+        if (!/^\d+(\.\d{1,2})?$/.test(sanitized)) {
             return null;
         }
 
-        const [hoursString, minutesString] = sanitized.split(':');
-        const hours = parseInt(hoursString, 10);
-        const minutes = parseInt(minutesString, 10);
-
-        if (Number.isNaN(hours) || Number.isNaN(minutes) || hours > 23 || minutes > 59) {
+        const value = parseFloat(sanitized);
+        if (Number.isNaN(value) || value < 0) {
             return null;
         }
 
-        return this.formatTime(hours, minutes);
+        return this.toCents(value);
     }
 
     checkAnswer() {
         this.hideMessages();
 
-        const normalizedAnswer = this.normalizeTimeInput(this.answerInput.value);
-        if (!normalizedAnswer) {
-            this.errorMessage.textContent = 'Format invalide. Exemple attendu : 08:30';
+        const userAnswerCents = this.normalizeMoneyInput(this.answerInput.value);
+
+        if (userAnswerCents === null) {
+            this.errorMessage.textContent = 'Format invalide. Exemple : 2,50';
             this.errorMessage.classList.add('show');
             return;
         }
 
-        const isCorrect = normalizedAnswer === this.currentAnswer;
+        const question = this.questions[this.currentQuestion - 1];
+        const isCorrect = userAnswerCents === this.currentAnswer;
 
         this.userAnswers.push({
-            question: `Horloge ${this.currentAnswer}`,
-            userAnswer: normalizedAnswer,
-            correctAnswer: this.currentAnswer,
+            question: `${this.formatAmount(question.price)} € payés avec ${this.formatAmount(question.paid)} €`,
+            userAnswer: this.formatAmount(userAnswerCents / 100),
+            correctAnswer: this.formatAmount(this.currentAnswer / 100),
             isCorrect
         });
 
         if (isCorrect) {
             this.score += 1;
-            this.successMessage.textContent = 'Bravo ! Bonne lecture de l\'heure.';
+            this.successMessage.textContent = 'Bravo ! Le rendu de monnaie est correct.';
             this.successMessage.classList.add('show');
         } else {
-            this.errorMessage.textContent = `Ce n\'est pas exact. Il fallait répondre ${this.currentAnswer}.`;
+            this.errorMessage.textContent = `Ce n'est pas exact. Il fallait ${this.formatAmount(this.currentAnswer / 100)} €.`;
             this.errorMessage.classList.add('show');
         }
 
@@ -249,7 +236,7 @@ class TimeComprehensionGame {
         this.userAnswers.forEach((answer, index) => {
             const answerElement = document.createElement('div');
             answerElement.className = `answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
-            answerElement.textContent = `${index + 1}. ${answer.question} → ${answer.userAnswer}${answer.isCorrect ? '' : ` (Réponse attendue : ${answer.correctAnswer})`}`;
+            answerElement.textContent = `${index + 1}. ${answer.question} → ${answer.userAnswer} €${answer.isCorrect ? '' : ` (Réponse attendue : ${answer.correctAnswer} €)`}`;
             this.answersList.appendChild(answerElement);
         });
     }
@@ -266,12 +253,12 @@ class TimeComprehensionGame {
         this.resultsContainer.classList.add('hidden');
 
         document.querySelectorAll('input[name="difficulty"]').forEach((radio) => {
-            radio.checked = radio.value === 'easy';
+            radio.checked = radio.value === 'facile';
         });
-        this.difficulty = 'easy';
+        this.difficulty = 'facile';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new TimeComprehensionGame();
+    new JeuMonnaie();
 });

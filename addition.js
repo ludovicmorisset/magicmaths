@@ -1,4 +1,4 @@
-class AdditionGame {
+class JeuAddition {
     constructor() {
         this.selectedTables = [];
         this.currentQuestion = 1;
@@ -225,5 +225,5 @@ class AdditionGame {
 
 // Initialisation du jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new AdditionGame();
+    new JeuAddition();
 });
