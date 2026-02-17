@@ -31,24 +31,45 @@ class JeuSoustraction {
 
         // Pavé numérique
         this.keypad = document.querySelector('.keypad');
+        this.randomTablesCheckbox = document.querySelector('.tables-grid input[value="random"]');
+        this.tableCheckboxes = Array.from(document.querySelectorAll('.tables-grid input[value]:not([value="random"])'));
 
         this.initializeEventListeners();
     }
 
     initializeEventListeners() {
         // Gestion des tables sélectionnées
-        document.querySelectorAll('.tables-grid input').forEach(checkbox => {
+        this.tableCheckboxes.forEach((checkbox) => {
             checkbox.addEventListener('change', () => {
-                this.selectedTables = Array.from(document.querySelectorAll('.tables-grid input:checked'))
-                    .map(input => parseInt(input.value));
+                if (checkbox.checked && this.randomTablesCheckbox) {
+                    this.randomTablesCheckbox.checked = false;
+                }
+                this.selectedTables = this.tableCheckboxes
+                    .filter((input) => input.checked)
+                    .map((input) => parseInt(input.value, 10));
             });
         });
 
+        if (this.randomTablesCheckbox) {
+            this.randomTablesCheckbox.addEventListener('change', () => {
+                if (this.randomTablesCheckbox.checked) {
+                    this.tableCheckboxes.forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
+                    this.selectedTables = [];
+                }
+            });
+        }
+
         // Bouton de démarrage
         this.startButton.addEventListener('click', () => {
-            if (this.selectedTables.length === 0) {
+            const useRandomTables = this.randomTablesCheckbox && this.randomTablesCheckbox.checked;
+            if (!useRandomTables && this.selectedTables.length === 0) {
                 alert('Veuillez sélectionner au moins une table de soustraction');
                 return;
+            }
+            if (useRandomTables) {
+                this.selectedTables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             }
             this.startGame();
         });
