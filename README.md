@@ -42,7 +42,7 @@ Chaque exercice comporte 10 questions, un score final et un récapitulatif des r
 
 1. Définissez le nom d'image :
    ```bash
-   export MATHS_APP_IMAGE=docker.io/<votre-user>/mathematiques:1.0.0
+   export MATHS_APP_IMAGE=docker.io/ludovicmorisset/magicmaths:latest
    ```
 2. Construisez :
    ```bash
@@ -58,7 +58,7 @@ Chaque exercice comporte 10 questions, un score final et un récapitulatif des r
    ```
 5. Déployez avec la même variable :
    ```bash
-   export MATHS_APP_IMAGE=docker.io/<votre-user>/mathematiques:1.0.0
+   export MATHS_APP_IMAGE=docker.io/ludovicmorisset/magicmaths:latest
    docker compose up -d
    ```
 

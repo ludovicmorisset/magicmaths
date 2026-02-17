@@ -1,6 +1,6 @@
 services:
   MagicMaths:
-    image: ${MATHS_APP_IMAGE:-mathematiques:local}
+    image: ${MATHS_APP_IMAGE:-docker.io/ludovicmorisset/magicmaths:latest}
     build:
       context: .
       dockerfile: Dockerfile
