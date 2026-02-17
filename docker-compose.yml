@@ -25,4 +25,4 @@ services:
 
 networks:
   reseau_interne:
-    driver: bridge
+    external: true
