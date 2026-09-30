@@ -34,7 +34,157 @@ class JeuSoustraction {
         this.randomTablesCheckbox = document.querySelector('.tables-grid input[value="random"]');
         this.tableCheckboxes = Array.from(document.querySelectorAll('.tables-grid input[value]:not([value="random"])'));
 
+        this.initializeModeTabs();
+        this.initializePosedSubtraction();
+
         this.initializeEventListeners();
+    }
+
+    initializeModeTabs() {
+        const tabs = Array.from(document.querySelectorAll('[data-mode-tab]'));
+        const panels = Array.from(document.querySelectorAll('[data-mode-panel]'));
+
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => {
+                tabs.forEach((item) => {
+                    const isActive = item === tab;
+                    item.classList.toggle('is-active', isActive);
+                    item.setAttribute('aria-selected', String(isActive));
+                    item.tabIndex = isActive ? 0 : -1;
+                });
+                panels.forEach((panel) => {
+                    panel.classList.toggle('hidden', panel.dataset.modePanel !== tab.dataset.modeTab);
+                });
+            });
+
+            tab.addEventListener('keydown', (event) => {
+                const currentIndex = tabs.indexOf(tab);
+                let nextIndex = currentIndex;
+                if (event.key === 'ArrowRight') {
+                    nextIndex = (currentIndex + 1) % tabs.length;
+                } else if (event.key === 'ArrowLeft') {
+                    nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                } else if (event.key === 'Home') {
+                    nextIndex = 0;
+                } else if (event.key === 'End') {
+                    nextIndex = tabs.length - 1;
+                } else {
+                    return;
+                }
+
+                event.preventDefault();
+                tabs[nextIndex].focus();
+                tabs[nextIndex].click();
+            });
+        });
+    }
+
+    initializePosedSubtraction() {
+        this.posedSelection = document.getElementById('posedSelection');
+        this.posedExercise = document.getElementById('posedExercise');
+        this.posedResults = document.getElementById('posedResults');
+        this.posedDigits = document.getElementById('posedDigits');
+        this.posedMinuend = document.getElementById('posedMinuend');
+        this.posedSubtrahend = document.getElementById('posedSubtrahend');
+        this.posedAnswer = document.getElementById('posedAnswer');
+        this.posedFeedback = document.getElementById('posedFeedback');
+        this.posedCurrentQuestion = document.getElementById('posedCurrentQuestion');
+        this.posedProgressFill = document.getElementById('posedProgressFill');
+        this.posedScore = document.getElementById('posedScore');
+        this.posedQuestions = [];
+        this.posedQuestionIndex = 0;
+        this.posedScoreValue = 0;
+
+        document.getElementById('posedStartButton').addEventListener('click', () => this.startPosedSubtraction());
+        document.getElementById('posedValidateButton').addEventListener('click', () => this.checkPosedAnswer());
+        document.getElementById('posedNextButton').addEventListener('click', () => this.nextPosedQuestion());
+        document.getElementById('posedRestartButton').addEventListener('click', () => {
+            this.posedResults.classList.add('hidden');
+            this.posedSelection.classList.remove('hidden');
+        });
+        this.posedAnswer.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && this.posedAnswer.value !== '') {
+                this.checkPosedAnswer();
+            }
+        });
+    }
+
+    startPosedSubtraction() {
+        const digits = parseInt(this.posedDigits.value, 10);
+        const minimum = digits === 1 ? 2 : (10 ** (digits - 1));
+        const maximum = (10 ** digits) - 1;
+
+        this.posedQuestions = Array.from({ length: 10 }, () => {
+            let minuend;
+            let subtrahend;
+            let hasExchange = false;
+
+            do {
+                minuend = Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+                subtrahend = Math.floor(Math.random() * (minuend - 1)) + 1;
+                hasExchange = minuend.toString().split('').some((digit, index, digitsArray) => {
+                    const lowerPlace = digitsArray.length - index - 1;
+                    return Number(digit) < Math.floor(subtrahend / (10 ** lowerPlace)) % 10;
+                });
+            } while (digits > 1 && (subtrahend < minimum || !hasExchange));
+
+            return { minuend, subtrahend, answer: minuend - subtrahend };
+        });
+
+        this.posedQuestionIndex = 0;
+        this.posedScoreValue = 0;
+        this.posedSelection.classList.add('hidden');
+        this.posedResults.classList.add('hidden');
+        this.posedExercise.classList.remove('hidden');
+        this.showPosedQuestion();
+    }
+
+    showPosedQuestion() {
+        const question = this.posedQuestions[this.posedQuestionIndex];
+        this.posedMinuend.textContent = question.minuend;
+        this.posedSubtrahend.textContent = question.subtrahend;
+        this.posedCurrentQuestion.textContent = this.posedQuestionIndex + 1;
+        this.posedProgressFill.style.width = `${this.posedQuestionIndex * 10}%`;
+        this.posedAnswer.value = '';
+        this.posedAnswer.disabled = false;
+        this.posedFeedback.textContent = '';
+        this.posedFeedback.className = 'posed-feedback';
+        document.getElementById('posedValidateButton').classList.remove('hidden');
+        document.getElementById('posedNextButton').classList.add('hidden');
+        this.posedAnswer.focus();
+    }
+
+    checkPosedAnswer() {
+        if (this.posedAnswer.value === '' || this.posedAnswer.disabled) {
+            return;
+        }
+
+        const question = this.posedQuestions[this.posedQuestionIndex];
+        const isCorrect = Number(this.posedAnswer.value) === question.answer;
+        if (isCorrect) {
+            this.posedScoreValue++;
+            this.posedFeedback.textContent = 'Bravo, c’est correct !';
+            this.posedFeedback.classList.add('is-correct');
+        } else {
+            this.posedFeedback.textContent = `La réponse était ${question.answer}.`;
+            this.posedFeedback.classList.add('is-incorrect');
+        }
+
+        this.posedAnswer.disabled = true;
+        document.getElementById('posedValidateButton').classList.add('hidden');
+        document.getElementById('posedNextButton').classList.remove('hidden');
+    }
+
+    nextPosedQuestion() {
+        this.posedQuestionIndex++;
+        if (this.posedQuestionIndex < this.posedQuestions.length) {
+            this.showPosedQuestion();
+            return;
+        }
+
+        this.posedExercise.classList.add('hidden');
+        this.posedResults.classList.remove('hidden');
+        this.posedScore.textContent = this.posedScoreValue;
     }
 
     initializeEventListeners() {

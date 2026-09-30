@@ -7,14 +7,19 @@
     <meta name="description" content="Exercices interactifs de tables de soustraction de 1 à 10 avec score et détail des réponses.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Tables de Soustraction</h1>
+        <h1>Soustractions</h1>
+
+        <div class="mode-tabs" role="tablist" aria-label="Type d'exercice">
+            <button type="button" class="mode-tab is-active" id="tablesTab" role="tab" aria-selected="true" aria-controls="tablesPanel" data-mode-tab="tables">Tables</button>
+            <button type="button" class="mode-tab" id="posedTab" role="tab" aria-selected="false" aria-controls="posedPanel" data-mode-tab="posed" tabindex="-1">Soustraction posée</button>
+        </div>
         
-        <div class="tables-selection">
+        <div class="tables-selection mode-panel" id="tablesPanel" role="tabpanel" aria-labelledby="tablesTab" data-mode-panel="tables">
             <h2>Sélectionnez les tables à réviser</h2>
             <div class="tables-grid">
                 <label class="random-option"><input type="checkbox" value="random"> Aléatoire (toutes les tables)</label>
@@ -32,6 +37,47 @@
             <button type="button" id="startButton" class="btn">Commencer</button>
             <a href="index.html" class="btn">Accueil</a>
         </div>
+
+        <section class="posed-panel mode-panel hidden" id="posedPanel" role="tabpanel" aria-labelledby="posedTab" data-mode-panel="posed">
+            <div class="posed-selection" id="posedSelection">
+                <h2>Réaliser une soustraction posée</h2>
+                <p class="section-description">Aligne les nombres et pense aux échanges entre les colonnes.</p>
+                <label class="select-label" for="posedDigits">Choisir le nombre de chiffres</label>
+                <select id="posedDigits" class="material-select">
+                    <option value="1">Unités (1 chiffre)</option>
+                    <option value="2">Dizaines (2 chiffres)</option>
+                    <option value="3">Centaines (3 chiffres)</option>
+                    <option value="4">Milliers (4 chiffres)</option>
+                </select>
+                <button type="button" id="posedStartButton" class="btn primary-action">Commencer</button>
+            </div>
+
+            <div class="posed-exercise hidden" id="posedExercise">
+                <div class="posed-progress">
+                    <div class="progress-bar"><div class="progress-fill" id="posedProgressFill"></div></div>
+                    <p><span id="posedCurrentQuestion">1</span>/10</p>
+                </div>
+                <div class="question-container posed-question-container">
+                    <p class="exercise-prompt" id="posedPrompt">Soustrais en respectant les colonnes.</p>
+                    <div class="posed-operation" aria-label="Soustraction posée">
+                        <div class="posed-number-row"><span aria-hidden="true"></span><span id="posedMinuend"></span></div>
+                        <div class="posed-number-row posed-subtrahend"><span aria-hidden="true">−</span><span id="posedSubtrahend"></span></div>
+                        <div class="posed-answer-row"><span aria-hidden="true">=</span><label for="posedAnswer" class="sr-only">Résultat de la soustraction</label><input type="number" id="posedAnswer" min="0" inputmode="numeric" autocomplete="off"></div>
+                    </div>
+                    <div class="buttons-container">
+                        <button type="button" id="posedValidateButton" class="btn validate-btn">Valider</button>
+                        <button type="button" id="posedNextButton" class="btn next-btn hidden">Suivant</button>
+                    </div>
+                    <p class="posed-feedback" id="posedFeedback" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+
+            <div class="posed-results hidden" id="posedResults" aria-live="polite">
+                <h2>Série terminée</h2>
+                <p class="posed-score">Ton score : <strong id="posedScore">0</strong>/10</p>
+                <button type="button" id="posedRestartButton" class="btn primary-action">Nouvelle série</button>
+            </div>
+        </section>
 
         <div class="exercise-container hidden">
             <div class="progress">
