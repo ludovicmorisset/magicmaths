@@ -1310,16 +1310,15 @@ button#restartButton {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    align-items: flex-start;
-    justify-content: flex-end;
-    min-height: 230px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 260px;
     padding: 1.25rem;
     aspect-ratio: 1.28;
-    text-align: left;
-    color: #fff;
-    background-color: #34544d;
-    background-size: cover;
-    background-position: center;
+    text-align: center;
+    color: var(--md-ink);
+    background-color: #f4f7f5;
     border: 0;
     border-radius: 14px;
     box-shadow: 0 3px 12px rgba(24, 51, 46, 0.14);
@@ -1338,81 +1337,69 @@ button#restartButton {
 
 .menu-item h2 {
     z-index: 1;
-    margin: 0 0 0.4rem;
+    margin: 0;
     color: var(--md-ink);
-    font-size: 1.1rem;
-    line-height: 1.35;
+    font-size: 1.45rem;
+    line-height: 1.3;
 }
 
 .menu-item p {
     z-index: 1;
     color: #405650;
-    font-size: 0.92rem;
-    line-height: 1.45;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 .menu-item::before {
     position: absolute;
     z-index: 0;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.88));
+    background-image: url("img/activites/motif-equations.svg");
+    background-repeat: repeat;
+    background-size: 420px 270px;
+    background-position: var(--pattern-position, center);
+    opacity: 0.42;
     content: "";
-    transition: opacity 180ms ease;
-}
-
-.menu-item:hover::before {
-    opacity: 0.76;
-}
-
-.menu-pattern {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    overflow: hidden;
-    color: rgba(23, 107, 91, 0.13);
-    pointer-events: none;
-}
-
-.menu-pattern::before {
-    position: absolute;
-    inset: -0.3rem;
-    overflow-wrap: anywhere;
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1.5;
-    content: attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol) "　" attr(data-symbol);
 }
 
 .menu-item--addition {
-    background-image: url("img/activites/addition.jpg");
+    background-color: #fff8e9;
+    --pattern-position: 0 0;
 }
 
 .menu-item--soustraction {
-    background-image: url("img/activites/soustraction.jpg");
+    background-color: #fff0ec;
+    --pattern-position: 110px 45px;
 }
 
 .menu-item--multiplication {
-    background-image: url("img/activites/multiplication.jpg");
+    background-color: #edf6f1;
+    --pattern-position: 35px 90px;
 }
 
 .menu-item--addition-aleatoire {
-    background-image: url("img/activites/addition-aleatoire.jpg");
+    background-color: #eff5fa;
+    --pattern-position: 140px 10px;
 }
 
 .menu-item--complements {
-    background-image: url("img/activites/complements.jpg");
+    background-color: #f5f2fa;
+    --pattern-position: 65px 135px;
 }
 
 .menu-item--heure {
-    background-image: url("img/activites/heure.jpg");
+    background-color: #eef4f8;
+    --pattern-position: 180px 80px;
 }
 
 .menu-item--monnaie {
-    background-image: url("img/activites/monnaie.jpg");
+    background-color: #fbf4e7;
+    --pattern-position: 90px 20px;
 }
 
 .menu-item--probabilites {
-    background-image: url("img/activites/probabilites.jpg");
+    background-color: #edf5f1;
+    --pattern-position: 220px 115px;
 }
 
 .mode-tabs {
@@ -1623,16 +1610,8 @@ button#restartButton {
     }
 
     .menu-item {
-        min-height: 200px;
+        min-height: 260px;
         padding: 1rem;
-    }
-
-    .menu-item h2 {
-        font-size: 1.1rem;
-    }
-
-    .menu-item p {
-        font-size: 0.92rem;
     }
 
     .buttons-container {
